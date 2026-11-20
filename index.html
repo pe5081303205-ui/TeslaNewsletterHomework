@@ -229,8 +229,8 @@ $("f").addEventListener("submit",e=>{
   if(NEWSLETTER_ENDPOINT){
     m.textContent="Enviando…";btn.disabled=true;
     fetch(NEWSLETTER_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})})
-      .then(r=>{if(!r.ok)throw 0;m.textContent="Listo, revisa tu correo: te enviamos el newsletter.";})
-      .catch(()=>{m.textContent="No se pudo enviar. Inténtalo de nuevo.";})
+      .then(async r=>{if(!r.ok){let d="";try{d=(await r.json()).error||""}catch(_){}throw (d||("código "+r.status));}m.textContent="Listo, revisa tu correo: te enviamos el newsletter.";})
+      .catch(d=>{m.textContent="No se pudo enviar. ("+(typeof d==="string"?d:"sin conexión")+")";})
       .finally(()=>{btn.disabled=false;});
     return;
   }
